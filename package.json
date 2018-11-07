@@ -1,0 +1,23 @@
+{
+  "name": "@bitbybit/emitter",
+  "version": "1.0.0",
+  "description": "Event Emitter",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MauroJr/emitter.git"
+  },
+  "keywords": [
+    "event",
+    "emitter"
+  ],
+  "author": "Mauro Junior",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MauroJr/emitter/issues"
+  },
+  "homepage": "https://github.com/MauroJr/emitter#readme"
+}
