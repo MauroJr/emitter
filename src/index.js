@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = createEmitter;
 
@@ -12,10 +12,11 @@ module.exports = createEmitter;
  * @property {function} prependOnceListener
  * @property {function} eventNames
  * @property {function} listeners
+ * @property {function} dispose
  */
 
 /** @typedef {(...args) => void} Listener */
-/** @typedef {Listener[]} Listeners*/
+/** @typedef {Listener[]} Listeners */
 
 /**
  * Emitter Factory
@@ -37,7 +38,8 @@ function createEmitter() {
     prependListener,
     prependOnceListener,
     eventNames,
-    listeners: getListeners
+    listeners: getListeners,
+    dispose: () => {}
   });
 
   return emitter;
@@ -52,7 +54,13 @@ function createEmitter() {
     const listeners = getListeners(eventName);
 
     addListener(listeners, listener);
-    return emitter;
+
+    return Object.assign({}, emitter, {
+      dispose() {
+        removeListener(listeners, listener);
+        return emitter;
+      }
+    });
   }
 
   /**
@@ -113,7 +121,7 @@ function createEmitter() {
   function prependListener(eventName, listener) {
     const listeners = getListeners(eventName);
 
-    addListener(listeners, listener, "prepend");
+    addListener(listeners, listener, 'prepend');
     return emitter;
   }
 
@@ -127,7 +135,7 @@ function createEmitter() {
     const listeners = getListeners(eventName);
     const wrapper = onceWrapper(listeners, listener);
 
-    addListener(listeners, wrapper, "prepend");
+    addListener(listeners, wrapper, 'prepend');
     return emitter;
   }
 
@@ -147,7 +155,8 @@ function createEmitter() {
     let listeners = events[eventName];
 
     if (listeners === undefined) {
-      listeners = [];
+      events[eventName] = [];
+      listeners = events[eventName];
     }
 
     return listeners;
@@ -165,7 +174,7 @@ function createEmitter() {
       return false;
     }
 
-    if (prepend === "prepend") {
+    if (prepend === 'prepend') {
       listeners.push(listener);
     } else {
       listeners.unshift(listener);
