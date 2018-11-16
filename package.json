@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MauroJr/emitter.git"
+    "url": "https://github.com/bitbybitco/emitter.git"
   },
   "author": "Mauro Junior",
   "license": "MIT",
@@ -14,9 +14,9 @@
     "npm": ">=5.2.0"
   },
   "bugs": {
-    "url": "https://github.com/MauroJr/emitter/issues"
+    "url": "https://github.com/bitbybitco/emitter/issues"
   },
-  "homepage": "https://github.com/MauroJr/emitter#readme",
+  "homepage": "https://github.com/bitbybitco/emitter#readme",
   "dependencies": {},
   "keywords": [
     "event",
@@ -81,7 +81,7 @@
     "mocha": "^5.2.0",
     "npm-scripts-info": "^0.3.9",
     "nyc": "^13.1.0",
-    "semantic-release": "^15.10.8",
+    "semantic-release": "^15.12.0",
     "travis-deploy-once": "^5.0.9"
   },
   "nyc": {
