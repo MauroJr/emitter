@@ -42,6 +42,8 @@ describe('Listen for events', function () {
     const emitter = createEmitter();
     let count = 0;
 
+    expect(emitter.dispose).to.be.a('function');
+
     const someEvent = emitter.on('someEvent', (param) => {
       count += 1;
       expect(param).to.be.equal('running');
@@ -63,7 +65,7 @@ describe('Listen for events', function () {
     });
   });
 
-  it('should always listen to a event', function (done) {
+  it('should listen to a event only once', function (done) {
     const emitter = createEmitter();
     let count = 0;
 
@@ -74,7 +76,7 @@ describe('Listen for events', function () {
 
     function emit(next) {
       emitter.emit('someEvent', 'running');
-      setTimeout(next, 10);
+      setImmediate(next);
     }
 
     emit(() => {
@@ -85,6 +87,41 @@ describe('Listen for events', function () {
         });
       });
     });
+  });
+
+  it('should prepend a event listener', function () {
+    const emitter = createEmitter();
+    let executed = false;
+
+    emitter.on('someEvent', () => {
+      expect(executed).to.be.equal(true);
+    });
+
+    emitter.prependListener('someEvent', () => {
+      executed = true;
+    });
+
+    emitter.emit('someEvent');
+  });
+
+  it('should prepend a once listener', function () {
+    const emitter = createEmitter();
+    let count = 0;
+    let executed = false;
+
+    emitter.on('someEvent', () => {
+      expect(executed).to.be.equal(true);
+    });
+
+    emitter.prependOnceListener('someEvent', () => {
+      executed = true;
+      count += 1;
+    });
+
+    emitter.emit('someEvent');
+    emitter.emit('someEvent');
+
+    expect(count).to.be.equal(1);
   });
 
   it('should remove a event listener', function (done) {
@@ -114,7 +151,7 @@ describe('Listen for events', function () {
     });
   });
 
-  it('should remove all event listener', function (done) {
+  it('should remove all event listeners', function (done) {
     const emitter = createEmitter();
     let count = 0;
 
@@ -133,7 +170,7 @@ describe('Listen for events', function () {
 
     function emit(next) {
       emitter.emit('someEvent', 'running');
-      setTimeout(next, 20);
+      setImmediate(next);
     }
 
     emit(() => {
@@ -145,5 +182,48 @@ describe('Listen for events', function () {
         });
       });
     });
+  });
+
+  it('should get all event names', function () {
+    const noop = () => {};
+    const eventsNames = ['someEvent1', 'someEvent2', 'someEvent3'];
+    const emitter = createEmitter();
+
+    eventsNames.forEach(evt => emitter.on(evt, noop));
+
+    expect(emitter.eventNames()).to.have.members(eventsNames);
+  });
+
+  it('should return all listeners from a given event', function () {
+    const listeners = [() => {}, () => {}, () => {}];
+    const emitter = createEmitter();
+
+    listeners.forEach(listener => emitter.on('someEvent', listener));
+
+    expect(emitter.listeners('someEvent')).to.have.members(listeners);
+  });
+
+  it('should add the same listener only once', function () {
+    const listener = () => {};
+    const emitter = createEmitter();
+
+    emitter.on('someEvent', listener);
+    emitter.on('someEvent', listener);
+    emitter.on('someEvent', listener);
+
+    expect(emitter.listeners('someEvent').length).to.be.equal(1);
+    expect(emitter.listeners('someEvent')[0]).to.be.equal(listener);
+  });
+
+  it('should ignore unknow listener', function () {
+    const listener = () => {};
+    const unknowListener = () => {};
+    const emitter = createEmitter();
+
+    emitter.on('someEvent', listener);
+    emitter.off('someEvent', unknowListener);
+
+    expect(emitter.listeners('someEvent').length).to.be.equal(1);
+    expect(emitter.listeners('someEvent')[0]).to.be.equal(listener);
   });
 });

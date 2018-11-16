@@ -30,7 +30,7 @@ function createEmitter() {
    * @public
    * @type {Emitter}
    */
-  const emitter = Object.freeze({
+  const emitter = {
     on,
     once,
     off,
@@ -39,8 +39,8 @@ function createEmitter() {
     prependOnceListener,
     eventNames,
     listeners: getListeners,
-    dispose: () => {}
-  });
+    dispose: noop
+  };
 
   return emitter;
 
@@ -211,3 +211,5 @@ function createEmitter() {
     return wrapper;
   }
 }
+
+function noop() {}
